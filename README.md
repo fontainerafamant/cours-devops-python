@@ -6,6 +6,10 @@ Installation de Flask
 Installation de pymysql
 
     sudo apt install python3-pymysql
+    
+Installation de requests
+
+    sudo apt install python3-requests
 
 Ajuster les paramètres de connexion de la base selon la configuration de la base
 Dans crud-rds-mysql.py, modifier les lignes 6,7,8,9
