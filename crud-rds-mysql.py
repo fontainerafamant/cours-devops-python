@@ -4,9 +4,9 @@ import pymysql
 app = Flask(__name__)
 
 # MySQL connection configuration
-DB_HOST = 'mybooks.ck380qchkwiz.us-east-2.rds.amazonaws.com'
-DB_USER = 'admin'
-DB_PASSWORD = 'fontaine2019+'
+DB_HOST = ''
+DB_USER = ''
+DB_PASSWORD = ''
 DB_NAME = 'mybooks'
 
 # Create connection to the MySQL database
