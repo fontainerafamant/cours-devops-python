@@ -1,72 +1,101 @@
 import requests
-import json
-
-def get_all_items():
-    response = requests.get('http://192.168.100.9:8080/books')
-    items = response.json()
-    return items
 
 
-def create_item(item):
-    response = requests.post('http://192.168.100.9:8080/books', json={'item': item})
-    return response.json()
+# Base URL of the backend Flask application
+BASE_URL = 'http://localhost:5000'
 
 
-def delete_item(item_id):
-    response = requests.delete(f'http://192.168.100.9:8080/books/{item_id}')
-    return response.json()
+# Function to display the main menu
+def display_menu():
+    print("***** Bookstore Management *****")
+    print("1. Get all books")
+    print("2. Add a book")
+    print("3. Update a book")
+    print("4. Delete a book")
+    print("5. Exit")
+    print("*******************************")
 
 
-def display_items():
-    items = get_all_items()
-    print('\nItem List:')
-    if items:
-        for item in items:
-            print(item)
+# Function to get all books
+def get_books():
+    response = requests.get(f'{BASE_URL}/books')
+    if response.status_code == 200:
+        books = response.json()
+        for book in books:
+            print(f"ID: {book['id']}, Author: {book['author']}, Title: {book['title']}, ISBN: {book['isbn']}")
     else:
-        print('No items found.')
+        print('Failed to retrieve books.')
 
 
-def add_item():
-    # item = {'id':10,'author':'Jean','title':'Mathematique','isbn':12151618}
-    x =  '{ "author":"Jean", "isbn":12151618, "title":"Mathematique"}'
-    item = json.loads(x)
-
-    response = create_item(item)
-    if 'message' in response:
-        print('\nError:', response['message'])
+# Function to add a new book
+def add_book():
+    print("***** Add a Book *****")
+    author = input("Enter the author: ")
+    title = input("Enter the title: ")
+    isbn = input("Enter the ISBN: ")
+    book_data = {
+        'author': author,
+        'title': title,
+        'isbn': isbn
+    }
+    response = requests.post(f'{BASE_URL}/books', json=book_data)
+    if response.status_code == 201:
+        print('Book added successfully.')
     else:
-        print('\nItem added successfully.')
+        print('Failed to add book.')
 
 
-def remove_item():
-    display_items()
-    item_id = input('\nEnter the ID of the item to remove: ')
-    response = delete_item(item_id)
-    if 'message' in response:
-        print('\nOK:', response['message'])
+# Function to update an existing book
+def update_book():
+    print("***** Update a Book *****")
+    book_id = input("Enter the ID of the book to update: ")
+    author = input("Enter the new author: ")
+    title = input("Enter the new title: ")
+    isbn = input("Enter the new ISBN: ")
+    book_data = {
+        'author': author,
+        'title': title,
+        'isbn': isbn
+    }
+    response = requests.put(f'{BASE_URL}/books/{book_id}', json=book_data)
+    if response.status_code == 200:
+        print('Book updated successfully.')
     else:
-        print('\nItem removed successfully.')
+        print('Failed to update book.')
 
 
-# CLI menu
-while True:
-    print('\n--- Item Menu ---')
-    print('1. Display Items')
-    print('2. Add Item')
-    print('3. Remove Item')
-    print('4. Exit')
-
-    choice = input('\nEnter your choice (1-4): ')
-
-    if choice == '1':
-        display_items()
-    elif choice == '2':
-        add_item()
-    elif choice == '3':
-        remove_item()
-    elif choice == '4':
-        print('\nGoodbye!')
-        break
+# Function to delete a book
+def delete_book():
+    print("***** Delete a Book *****")
+    book_id = input("Enter the ID of the book to delete: ")
+    response = requests.delete(f'{BASE_URL}/books/{book_id}')
+    if response.status_code == 200:
+        print('Book deleted successfully.')
     else:
-        print('\nInvalid choice. Please try again.')
+        print('Failed to delete book.')
+
+
+# Main CLI loop
+def main():
+    while True:
+        display_menu()
+        choice = input("Enter your choice (1-5): ")
+
+        if choice == '1':
+            get_books()
+        elif choice == '2':
+            add_book()
+        elif choice == '3':
+            update_book()
+        elif choice == '4':
+            delete_book()
+        elif choice == '5':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please try again.\n")
+
+
+# Run the main CLI loop
+if __name__ == '__main__':
+    main()
